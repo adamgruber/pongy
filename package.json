@@ -1,0 +1,8 @@
+{
+  "name": "pongy",
+  "version": "1.0.0",
+  "description": "Track Ping Pong matches",
+  "main": "index.js",
+  "author": "Adam Gruber",
+  "license": "MIT"
+}
