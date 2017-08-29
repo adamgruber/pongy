@@ -7,11 +7,6 @@ Pongy is an application to help track ping pong games, designed to be used with 
 
 Each side of the ping pong table is assigned a button. Pressing the button makes a request to an endpoint which then updates the application accordingly.
 
-## Button Locations
-
-- White: Wall side
-- Black: Windows side
-
 ## Button Press Actions
 
 The flic button is capable of recognizing three actions: click, double-click, and hold.
@@ -36,11 +31,17 @@ Hold         | Start a new game
 
 Method | Path | Action
 ------ | ---- | ------
-GET  | /games | List all games
-GET  | /games:id | Get game by id
-GET  | /games/current | Get current game
-POST | /games/new | Create new game
+GET | /games/new | Create new game
 POST | /games/update | Update current game
+
+#### Post Body
+The POST endpoints expect a request body with the following format:
+```js
+{
+  action: '' // {string} name of store action,
+  args: [], // {array} arguments to pass to action
+}
+```
 
 ## Client
 
@@ -56,26 +57,6 @@ POST | /games/update | Update current game
 - Which side has service
 - Serve count
 
-#### Game Object
-
-```js
-{
-  id: uuid,
-  white_score: int,
-  black_score : int
-}
-```
-
-#### Computed Properties
-
-**`isDeuce`**
-- Is the game in a state of deuce?
-- Computed based on the game score, `true` if the score is tied at 10.
-
-**`serving`**
-- Which side is currently serving?
-- Computed based on the score and the `isDeuce` property.
-
 # Other Information
 
 ## Game Rules
@@ -85,6 +66,7 @@ POST | /games/update | Update current game
 - Game played to 11
 - If score reaches 10 - 10, match goes into deuce
 - In deuce service alternates every point
+- Must win by 2
 
 ## Future Features
 
