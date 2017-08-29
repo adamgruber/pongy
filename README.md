@@ -3,6 +3,26 @@ Pongy: The Ping Pong Game Tracker
 
 Pongy is an application to help track ping pong games, designed to be used with [flic buttons][flic]. It is comprised of a server connected to a client using WebSockets. Making requests to the server will result in messages being sent to the client which will then take some action.
 
+# Getting Started
+
+### Local Development
+
+To run both client and server locally with one command that watches for changes and reloads:
+
+```sh
+$ yarn run start:dev
+```
+
+You can also run the client and server separately:
+
+```sh
+$ yarn start # Start the client and watch for changes
+```
+
+```sh
+$ yarn run start:server # Start the server (not in dev mode)
+```
+
 # How It Works
 
 Each side of the ping pong table is assigned a button. Pressing the button makes a request to an endpoint which then updates the application accordingly.
