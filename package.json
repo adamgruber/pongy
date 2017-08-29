@@ -1,8 +1,45 @@
 {
   "name": "pongy",
-  "version": "1.0.0",
-  "description": "Track Ping Pong matches",
-  "main": "index.js",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Track ping pong matches",
   "author": "Adam Gruber",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "animate-css-styled-components": "^0.0.17",
+    "babel-cli": "^6.26.0",
+    "debug": "^3.0.0",
+    "kcors": "^2.2.1",
+    "koa": "^2.3.0",
+    "koa-bodyparser": "2",
+    "koa-router": "^7.2.1",
+    "koa-static": "3",
+    "lodash": "^4.17.4",
+    "mobx": "^3.2.2",
+    "mobx-react": "^4.2.2",
+    "mobx-react-devtools": "^4.2.15",
+    "nodemon": "^1.11.0",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-scripts": "1.0.11",
+    "react-websocket": "^1.1.7",
+    "styled-components": "^2.1.2",
+    "uuid": "^3.1.0",
+    "ws": "^3.1.0"
+  },
+  "scripts": {
+    "start": "NODE_PATH=src react-scripts start",
+    "start:dev": "(yarn build:server && yarn start:server:dev) & yarn watch:server & yarn start",
+    "build": "NODE_PATH=src react-scripts build",
+    "start:server": "node ./server/build/index.js",
+    "start:server:dev": "DEBUG=koa* nodemon ./server/build/index.js",
+    "watch:server": "NODE_ENV=development babel --watch ./server/src -d ./server/build",
+    "build:server": "NODE_ENV=production babel ./server/src -d ./server/build",
+    "test": "NODE_PATH=src react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+  }
 }
