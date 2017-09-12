@@ -9,7 +9,7 @@ class Game {
     this.initialServer = players[0].id;
 
     extendObservable(this, {
-      isActive: true,
+      isActive: false,
       server: null,
 
       get playerOne() {

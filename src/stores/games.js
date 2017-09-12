@@ -24,8 +24,8 @@ class GameStore {
           new Player(uuid.v4(), 'Player One'),
           new Player(uuid.v4(), 'Player Two'),
         ]);
-        this.games.forEach(game => game.toggleIsActive());
         this.games.push(game);
+        this.setActiveGame(id);
         return game;
     }
 

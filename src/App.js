@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
+import Websocket from 'react-websocket';
 import './App.css';
 import Game from './Game';
-import Websocket from 'react-websocket';
 
 const App = observer(class App extends Component {
   constructor(props) {
@@ -41,7 +41,7 @@ const App = observer(class App extends Component {
     const { store } = this.props;
     const storeAction = store[action];
     if (storeAction && storeAction.isMobxAction) {
-      storeAction(args);
+      storeAction(...args);
     }
   }
 

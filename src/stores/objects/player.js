@@ -11,7 +11,7 @@ class Player {
       incrementScore: action(() => this.score += 1),
 
       decrementScore: action(() => {
-        if (this.score >= 0) {
+        if (this.score > 0) {
           return this.score -= 1
         }
       }),
