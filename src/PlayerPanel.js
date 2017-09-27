@@ -1,49 +1,65 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Score, PlayerTitle } from './styled';
+import { FlexContainer } from 'common-styled-components';
+import {
+  Panel,
+  PlayerStatus,
+  PlayerTitle,
+  Score,
+  ServeIndicatorInner,
+  ServeIndicatorWrap,
+  ServiceDot,
+} from './styled';
 
-const ServeIndicatorWrap = styled.div`
-  display: flex;
-  justify-content: space-around;
-`;
-
-const ServeIndicator = ({ showActive, serve }) => (
+const ServeIndicator = ({ showActive, serve, isDeuce }) => (
     <ServeIndicatorWrap>
-      <ServiceDot active={ showActive && serve === 1 } />
-      <ServiceDot active={ showActive && serve === 2 } />
+      <ServeIndicatorInner>
+        <ServiceDot active={ showActive && serve === 1 } />
+        { !isDeuce && <ServiceDot active={ showActive && serve === 2 } /> }
+      </ServeIndicatorInner>
     </ServeIndicatorWrap>
 );
 
-const AdvantageIndicator = props => (
-  (props.hasAdvantage && <div>Advantage</div>) || null
-);
-
-const ServiceDot = styled.div`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 1rem;
-  background-color: ${props => props.active ? 'green' : '#ccc' }
-`;
-
-const PlayerPanel = ({ title, score, className, hasWon, hasAdvantage, isServer, serveNumber }) => (
-  <div className={ className }>
+const PlayerPanel = ({
+  className,
+  hasAdvantage,
+  hasWon,
+  isDeuce,
+  isGameOver,
+  isServer,
+  score,
+  serveNumber,
+  title,
+}) => (
+  <Panel>
     <PlayerTitle>{ title }</PlayerTitle>
-    <Score>{ score }</Score>
-    <ServeIndicator showActive={ isServer} serve={ serveNumber } />
-    <AdvantageIndicator hasAdvantage={ hasAdvantage } />
-    { hasWon && <div>A WINNER IS YOU!</div> }
-  </div>
+    <ServeIndicator
+      showActive={ !isGameOver && isServer }
+      serve={ serveNumber }
+      isDeuce={ isDeuce } />
+    <FlexContainer
+      direction="column"
+      align="center"
+      justify="center"
+      height="80%">
+      <PlayerStatus
+        visible={ hasAdvantage || hasWon }
+        win={ hasWon }>{ hasWon ? 'Winner' : 'Advantage' }
+      </PlayerStatus>
+      <Score hasWon={ hasWon }>{ score }</Score>
+      </FlexContainer>
+  </Panel>
 );
 
 PlayerPanel.propTypes = {
-  title: PropTypes.string,
-  score: PropTypes.number,
-  className: PropTypes.string,
-  hasWon: PropTypes.bool,
   hasAdvantage: PropTypes.bool,
+  hasWon: PropTypes.bool,
+  isDeuce: PropTypes.bool,
   isServer: PropTypes.bool,
-  serveNumber: PropTypes.bool,
+  score: PropTypes.number,
+  serveNumber: PropTypes.number,
+  title: PropTypes.string,
 };
 
 export default PlayerPanel;

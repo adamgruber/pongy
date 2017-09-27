@@ -2,12 +2,26 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { observer } from 'mobx-react';
 import Websocket from 'react-websocket';
-import './App.css';
+import { ThemeProvider } from 'styled-components';
+import { FlexContainer } from 'common-styled-components';
 import Game from './Game';
+import {
+  AppInfo,
+  Header,
+  HeaderTitle,
+  Main,
+  WSConnectionIndicator, 
+} from './styled';
+import theme from './theme';
 
 const App = observer(class App extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      wsConnected: false
+    };
+    this.onSocketOpen = this.onSocketOpen.bind(this);
+    this.onSocketClose = this.onSocketClose.bind(this);
     this.onSocketMessage = this.onSocketMessage.bind(this);
   }
 
@@ -25,6 +39,14 @@ const App = observer(class App extends Component {
       // Ignore any messages that 
       // are not stringified JSON
     }
+  }
+
+  onSocketOpen() {
+    this.setState({ wsConnected: true });
+  }
+
+  onSocketClose() {
+    this.setState({ wsConnected: false });
   }
 
   /*
@@ -47,19 +69,28 @@ const App = observer(class App extends Component {
 
   render() {
     const { store } = this.props;
+    const { wsConnected } = this.state;
     return (
-      <main className="app">
-        <Websocket
-          url="ws://localhost:4000"
-          onMessage={this.onSocketMessage}
-          reconnect={ false } />
-        <div className="app-header">
-          <h2>PONGY!</h2>
-        </div>
-        <div className='app-body'>
-          <Game game={ store.currentGame } />
-        </div>
-      </main>
+      <ThemeProvider theme={ theme }>
+        <FlexContainer direction="column" fullHeight>
+          <Main>
+            <Websocket
+              debug
+              url="ws://localhost:4000"
+              onOpen={ this.onSocketOpen }
+              onClose={ this.onSocketClose }
+              onMessage={ this.onSocketMessage }
+              reconnect={ false } />
+            <Game game={ store.currentGame } />
+          </Main>
+          <AppInfo>
+            <HeaderTitle>pongy!</HeaderTitle>
+            <WSConnectionIndicator connected={ wsConnected }>
+              { wsConnected ? 'Connected' : 'Disconnected' }
+            </WSConnectionIndicator>
+          </AppInfo>
+        </FlexContainer>
+      </ThemeProvider>
     );
   }
 });

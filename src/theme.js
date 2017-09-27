@@ -1,0 +1,15 @@
+module.exports = {
+  sky: '#caebf2',
+  carbon: '#a9a9a9',
+  watermelon: '#ff3b3f',
+  neutral: '#efefef',
+  lime: '#e5e338',
+  electricLime: '#88d317',
+  grass: '#8fc33a',
+  golden: '#f9be02',
+  matte: '#414141',
+  marine: '#57bc90',
+  apricot: '#f7882f',
+  blueberry: '#6b7a8f',
+  plaster: '#cdcdcd',
+};

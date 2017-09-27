@@ -141,9 +141,26 @@ class Game {
     return (this.server === pOneId) ? pTwoId : pOneId;
   }
 
+  _getPlayerById(playerId) {
+    return this.players.filter(player => player.id === playerId)[0];
+  }
+
+  getDisplayScoreForPlayer(playerId) {
+    if (this.isDeuce || this.playerAdvantage) {
+      return this.winingScore - 1;
+    }
+
+    return this._getPlayerById(playerId).score;
+  }
+
   // Temp helper methods
   setDeuce() {
     this.playerOne.score = 10;
+    this.playerTwo.score = 10;
+  }
+
+  setAdvantage() {
+    this.playerOne.score = 11;
     this.playerTwo.score = 10;
   }
 }
