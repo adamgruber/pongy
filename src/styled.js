@@ -1,14 +1,6 @@
 import styled from 'styled-components';
 import { FlexContainer } from 'common-styled-components';
 
-export const Header = styled.header`
-  background-color: ${props => props.theme.blueberry};
-  flex-basis: 50px;
-  padding: 20px;
-  color: #fff;
-  text-align: center;
-`;
-
 export const Main = styled.main`
   flex: 1;
 `;

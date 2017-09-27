@@ -9,7 +9,7 @@ const Game = observer(({ game }) => {
   return (
     <FlexContainer justify="space-around" fullHeight>
       { game.players.map(player => {
-        const { id, title, score } = player;
+        const { id, title } = player;
         const { winner, server, playerAdvantage, scoreTotal } = game;
         const serveNumber = game.isDeuce ? 1 : (scoreTotal % 2 === 0 ? 1 : 2);
         const displayScore = game.getDisplayScoreForPlayer(id);

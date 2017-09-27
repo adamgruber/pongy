@@ -7,7 +7,6 @@ import { FlexContainer } from 'common-styled-components';
 import Game from './Game';
 import {
   AppInfo,
-  Header,
   HeaderTitle,
   Main,
   WSConnectionIndicator, 
