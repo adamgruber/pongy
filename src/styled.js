@@ -19,7 +19,7 @@ export const AppInfo = styled.div.attrs({
 export const Score = styled.h1.attrs({
   className: 'score'
 })`
-  font-size: 20rem;
+  font-size: 70vh;
   font-weight: normal;
   margin: 0;
   color: ${props => props.hasWon ? props.theme.marine : props.theme.matte};
@@ -93,6 +93,7 @@ export const ServiceDot = styled.div`
 export const PlayerStatus = styled.h1.attrs({
   className: 'player-status'
 })`
+  position: absolute;
   margin: 0 0 1.5rem 0;
   padding: 0.5rem 1rem;
   color: #fff;

@@ -41,7 +41,7 @@ const PlayerPanel = ({
       direction="column"
       align="center"
       justify="center"
-      height="80%">
+      fullHeight>
       <PlayerStatus
         visible={ hasAdvantage || hasWon }
         win={ hasWon }>{ hasWon ? 'Winner' : 'Advantage' }
