@@ -8,6 +8,7 @@
   "dependencies": {
     "animate-css-styled-components": "^0.0.17",
     "babel-cli": "^6.26.0",
+    "common-styled-components": "^0.0.1",
     "debug": "^3.0.0",
     "kcors": "^2.2.1",
     "koa": "^2.3.0",
