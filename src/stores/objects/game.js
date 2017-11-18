@@ -10,7 +10,6 @@ class Game {
 
     extendObservable(this, {
       isActive: false,
-      server: null,
 
       get playerOne() {
         return this.players[0];
@@ -44,6 +43,10 @@ class Game {
         return !this.isGameOver && this.isGameTied && (
           pOneScore >= deuceScore && pTwoScore >= deuceScore
         );
+      },
+
+      get server() {
+        return this._getServerByScore(this.scoreTotal);
       },
 
       get isGameOver() {
@@ -97,31 +100,43 @@ class Game {
 
     // Use autorun to call a function whenever observed
     // values referenced in that function have changed
-    autorun(this._determineServer.bind(this));
+    autorun(this._announceScores.bind(this));
   }
 
-  /*
-   * Determine the current server based on `isDeuce`
-   * and the `scoreTotal`. Runs whenever either property
-   * has changed and modifies the observable `server` property
+  /**
+   * Announce scores using the experimental Speech Synthesis API.
+   * Runs whenever `scoreTotal` has changed.
    */
-  _determineServer() {
-    let nextServer;
-
-    if (this.isDeuce) {
-      nextServer = (this.scoreTotal % 2 === 0)
-        ? this.playerOne.id : this.playerTwo.id;
-
-    } else if (this.scoreTotal === 0) {
-      nextServer = this.playerOne.id;
-
-    } else if (this.scoreTotal % 2 === 0) {
-      nextServer = this._getOppositeServer();
+  _announceScores() {
+    let sentence;
+    if (this.scoreTotal === 0) {
+      sentence = 'New game.';
+    } else if (this.playerAdvantage) {
+      const player = this.playerAdvantage === this.playerOne.id ? 'one' : 'two';
+      sentence = `Advantage Player ${player}`;
+    } else if (this.isDeuce) {
+      sentence = 'Deuce';
+    } else if (this._playerOneHasWon()) {
+      sentence = 'Player one wins.';
+    } else if (this._playerTwoHasWon()) {
+      sentence = 'Player two wins.';
+    } else {
+      const server = this._getPlayerById(
+        this._getServerByScore(this.scoreTotal)
+      );
+      const receiver = this._getPlayerById(
+        this._getOppositeServer(server.id)
+      );
+      sentence = `${server.score}, ${receiver.score}`;
     }
 
-    if (nextServer) {
-      this.server = nextServer;
+    const synth = window.speechSynthesis;
+    const utter = new SpeechSynthesisUtterance(sentence);
+    if (synth.speaking || synth.pending) {
+      synth.pause();
+      synth.cancel();
     }
+    synth.speak(utter);
   }
 
   _playerOneHasWon() {
@@ -146,14 +161,20 @@ class Game {
     return playerA.score >= (playerB.score + 2);
   }
 
-  _getOppositeServer() {
+  _getOppositeServer(playerId) {
     const { id: pOneId } = this.playerOne;
     const { id: pTwoId } = this.playerTwo;
-    return (this.server === pOneId) ? pTwoId : pOneId;
+    return (playerId === pOneId) ? pTwoId : pOneId;
   }
 
   _getPlayerById(playerId) {
     return this.players.filter(player => player.id === playerId)[0];
+  }
+
+  _getServerByScore(scoreTotal) {
+    const divisor = (this.playerAdvantage || this.isDeuce) ? 1 : 2;
+    const isInitialServer = Math.floor(this.scoreTotal / divisor) % 2 === 0;
+    return isInitialServer ? this.playerOne.id : this.playerTwo.id;
   }
 
   getDisplayScoreForPlayer(playerId) {
