@@ -20,6 +20,13 @@ class Game {
         return this.players[1];
       },
 
+      get score() {
+        return {
+          playerOne: this.playerOne.score,
+          playerTwo: this.playerTwo.score
+        };
+      },
+
       get scoreTotal() {
         return this.playerOne.score + this.playerTwo.score;
       },
@@ -159,9 +166,24 @@ class Game {
     this.playerTwo.score = 10;
   }
 
-  setAdvantage() {
-    this.playerOne.score = 11;
-    this.playerTwo.score = 10;
+  setAdvantage(player = 0) {
+    const pOne = this.players[player];
+    const pTwo = player === 0
+      ? this.players[1]
+      : this.players[0];
+
+    pOne.score = 11;
+    pTwo.score = 10;
+  }
+
+  setWinner(player = 0) {
+    const pOne = this.players[player];
+    const pTwo = player === 0
+      ? this.players[1]
+      : this.players[0];
+
+    pOne.score = 11;
+    pTwo.score = 9;
   }
 }
 
