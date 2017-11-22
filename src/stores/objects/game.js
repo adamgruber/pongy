@@ -38,10 +38,11 @@ class Game {
       },
 
       get isDeuce() {
+        const deuceScore = this.winingScore - 1;
         const { score: pOneScore } = this.playerOne;
         const { score: pTwoScore } = this.playerTwo;
-        return !this.isGameOver && (
-          pOneScore >= 10 && pTwoScore >= 10
+        return !this.isGameOver && this.isGameTied && (
+          pOneScore >= deuceScore && pTwoScore >= deuceScore
         );
       },
 
@@ -64,15 +65,18 @@ class Game {
       },
 
       get playerAdvantage() {
-        if (!this.isDeuce) {
+        if (this.isGameTied || this.isGameOver) {
           return undefined;
-        } else if (this.isGameTied) {
-          return undefined;
-        } else {
-          const { score: pOneScore, id: pOneId } = this.playerOne;
-          const { score: pTwoScore, id: pTwoId } = this.playerTwo;
-          return (pOneScore > pTwoScore) ? pOneId : pTwoId;
         }
+
+        const deuceScore = this.winingScore - 1;
+        const { score: pOneScore, id: pOneId } = this.playerOne;
+        const { score: pTwoScore, id: pTwoId } = this.playerTwo;
+
+        if (pOneScore <= deuceScore && pTwoScore <= deuceScore) {
+          return undefined;
+        }
+        return (pOneScore > pTwoScore) ? pOneId : pTwoId;
       },
 
       incrementScore: action(player => {
