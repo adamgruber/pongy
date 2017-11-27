@@ -19,7 +19,9 @@ export const AppInfo = styled.div.attrs({
 export const Score = styled.h1.attrs({
   className: 'score'
 })`
-  font-size: 70vh;
+  position: relative;
+  top: -2vh;
+  font-size: 65vh;
   font-weight: normal;
   margin: 0;
   color: ${p => {
@@ -34,6 +36,7 @@ export const PlayerTitle = styled.h2.attrs({
 })`
   color: #fff;
   margin: 0;
+  font-size: 3.5vh;
   line-height: 10vh;
   background-color: ${p => p.theme.blueberry};
 `;
@@ -109,7 +112,7 @@ export const PlayerStatus = styled.h1.attrs({
 export const ScoreBox = styled.div.attrs({
   className: 'score-box',
 })`
-  height: 60vh;
+  height: 64vh;
   overflow: hidden;
   position: relative;
 `;
