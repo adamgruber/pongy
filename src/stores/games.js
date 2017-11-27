@@ -14,8 +14,8 @@ class GameStore {
           },
 
           newGame: action(id => this.createGame(id)),
-          incrementScore: action(player => this.currentGame.incrementScore(player)),
-          decrementScore: action(player => this.currentGame.decrementScore(player)),
+          incrementScore: action(playerIndex => this.currentGame.incrementScore(playerIndex)),
+          decrementScore: action(playerIndex => this.currentGame.decrementScore(playerIndex)),
         });
     }
 

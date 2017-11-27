@@ -20,6 +20,13 @@ class Game {
         return this.players[1];
       },
 
+      get score() {
+        return {
+          playerOne: this.playerOne.score,
+          playerTwo: this.playerTwo.score
+        };
+      },
+
       get scoreTotal() {
         return this.playerOne.score + this.playerTwo.score;
       },
@@ -31,10 +38,11 @@ class Game {
       },
 
       get isDeuce() {
+        const deuceScore = this.winingScore - 1;
         const { score: pOneScore } = this.playerOne;
         const { score: pTwoScore } = this.playerTwo;
-        return !this.isGameOver && (
-          pOneScore >= 10 && pTwoScore >= 10
+        return !this.isGameOver && this.isGameTied && (
+          pOneScore >= deuceScore && pTwoScore >= deuceScore
         );
       },
 
@@ -57,26 +65,29 @@ class Game {
       },
 
       get playerAdvantage() {
-        if (!this.isDeuce) {
+        if (this.isGameTied || this.isGameOver) {
           return undefined;
-        } else if (this.isGameTied) {
-          return undefined;
-        } else {
-          const { score: pOneScore, id: pOneId } = this.playerOne;
-          const { score: pTwoScore, id: pTwoId } = this.playerTwo;
-          return (pOneScore > pTwoScore) ? pOneId : pTwoId;
         }
+
+        const deuceScore = this.winingScore - 1;
+        const { score: pOneScore, id: pOneId } = this.playerOne;
+        const { score: pTwoScore, id: pTwoId } = this.playerTwo;
+
+        if (pOneScore <= deuceScore && pTwoScore <= deuceScore) {
+          return undefined;
+        }
+        return (pOneScore > pTwoScore) ? pOneId : pTwoId;
       },
 
-      incrementScore: action(player => {
+      incrementScore: action(playerIndex => {
         // Disallow incrementing when a game is over
         if (!this.isGameOver) {
-          this[player].incrementScore();
+          this.players[playerIndex].incrementScore();
         }
       }),
 
-      decrementScore: action(player => {
-        this[player].decrementScore();
+      decrementScore: action(playerIndex => {
+        this.players[playerIndex].decrementScore();
       }),
 
       toggleIsActive: action((isActive) => {
@@ -159,9 +170,24 @@ class Game {
     this.playerTwo.score = 10;
   }
 
-  setAdvantage() {
-    this.playerOne.score = 11;
-    this.playerTwo.score = 10;
+  setAdvantage(player = 0) {
+    const pOne = this.players[player];
+    const pTwo = player === 0
+      ? this.players[1]
+      : this.players[0];
+
+    pOne.score = 11;
+    pTwo.score = 10;
+  }
+
+  setWinner(player = 0) {
+    const pOne = this.players[player];
+    const pTwo = player === 0
+      ? this.players[1]
+      : this.players[0];
+
+    pOne.score = 11;
+    pTwo.score = 9;
   }
 }
 

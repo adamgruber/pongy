@@ -1,11 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FlexContainer } from 'common-styled-components';
 import {
   Panel,
   PlayerStatus,
   PlayerTitle,
   Score,
+  ScoreBox,
   ServeIndicatorInner,
   ServeIndicatorWrap,
   ServiceDot,
@@ -14,7 +14,7 @@ import {
 const ServeIndicator = ({ showActive, serve, isDeuce }) => (
     <ServeIndicatorWrap>
       <ServeIndicatorInner>
-        <ServiceDot active={ showActive && serve === 1 } />
+        <ServiceDot isDeuce={ isDeuce } active={ showActive && serve === 1 } />
         { !isDeuce && <ServiceDot active={ showActive && serve === 2 } /> }
       </ServeIndicatorInner>
     </ServeIndicatorWrap>
@@ -33,21 +33,20 @@ const PlayerPanel = ({
 }) => (
   <Panel>
     <PlayerTitle>{ title }</PlayerTitle>
+    <PlayerStatus
+      visible={ hasAdvantage || hasWon }
+      hasWon={ hasWon }>{ hasWon ? 'Winner' : 'Advantage' }
+    </PlayerStatus>
+    <ScoreBox>
+      <Score
+        hasAdvantage={ hasAdvantage }
+        hasWon={ hasWon }>{ score }
+      </Score>
+    </ScoreBox>
     <ServeIndicator
       showActive={ !isGameOver && isServer }
       serve={ serveNumber }
-      isDeuce={ isDeuce } />
-    <FlexContainer
-      direction="column"
-      align="center"
-      justify="center"
-      height="80%">
-      <PlayerStatus
-        visible={ hasAdvantage || hasWon }
-        win={ hasWon }>{ hasWon ? 'Winner' : 'Advantage' }
-      </PlayerStatus>
-      <Score hasWon={ hasWon }>{ score }</Score>
-      </FlexContainer>
+      isDeuce={ hasAdvantage || isDeuce } />
   </Panel>
 );
 
