@@ -1,8 +1,8 @@
 import { extendObservable, action } from 'mobx';
-import Game from 'stores/objects/game';
-import Player from 'stores/objects/player';
 import find from 'lodash/find';
 import uuid from 'uuid';
+import Game from './objects/game';
+import Player from './objects/player';
 
 class GameStore {
     constructor() {
