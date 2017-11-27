@@ -79,15 +79,15 @@ class Game {
         return (pOneScore > pTwoScore) ? pOneId : pTwoId;
       },
 
-      incrementScore: action(player => {
+      incrementScore: action(playerIndex => {
         // Disallow incrementing when a game is over
         if (!this.isGameOver) {
-          this[player].incrementScore();
+          this.players[playerIndex].incrementScore();
         }
       }),
 
-      decrementScore: action(player => {
-        this[player].decrementScore();
+      decrementScore: action(playerIndex => {
+        this.players[playerIndex].decrementScore();
       }),
 
       toggleIsActive: action((isActive) => {
