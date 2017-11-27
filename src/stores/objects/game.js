@@ -46,7 +46,7 @@ class Game {
       },
 
       get server() {
-        return this._getServerByScore(this.scoreTotal);
+        return this._getCurrentServer();
       },
 
       get isGameOver() {
@@ -121,9 +121,7 @@ class Game {
     } else if (this._playerTwoHasWon()) {
       sentence = 'Player two wins.';
     } else {
-      const server = this._getPlayerById(
-        this._getServerByScore(this.scoreTotal)
-      );
+      const server = this._getPlayerById(this._getCurrentServer());
       const receiver = this._getPlayerById(
         this._getOppositeServer(server.id)
       );
@@ -171,7 +169,7 @@ class Game {
     return this.players.filter(player => player.id === playerId)[0];
   }
 
-  _getServerByScore(scoreTotal) {
+  _getCurrentServer() {
     const divisor = (this.playerAdvantage || this.isDeuce) ? 1 : 2;
     const isInitialServer = Math.floor(this.scoreTotal / divisor) % 2 === 0;
     return isInitialServer ? this.playerOne.id : this.playerTwo.id;
