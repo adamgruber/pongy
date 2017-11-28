@@ -1,5 +1,4 @@
 import GameStore from '../../stores/games';
-import Game from '../../stores/objects/game';
 
 describe('GameStore', () => {
   let store;
