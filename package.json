@@ -38,6 +38,7 @@
     "watch:server": "NODE_ENV=development babel --watch ./server/src -d ./server/build",
     "build:server": "NODE_ENV=production babel ./server/src -d ./server/build",
     "test": "NODE_PATH=src react-scripts test --env=jsdom",
+    "lint": "node_modules/eslint/bin/eslint.js src",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
