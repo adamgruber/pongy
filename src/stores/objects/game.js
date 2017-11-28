@@ -8,8 +8,8 @@ class Game {
    * @param {string} id ID for game, defaults to new UUID
    * @param {Player[]} players Array of Player instances
    */
-  constructor(id = uuid.v4(), players) {
-    this.id = id;
+  constructor(id, players) {
+    this.id = id || uuid.v4();
     this.players = players;
     this.winingScore = 11;
     this.initialServer = players[0].id;
