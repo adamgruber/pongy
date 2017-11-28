@@ -2,6 +2,12 @@ import { extendObservable, action, autorun } from 'mobx';
 import uuid from 'uuid';
 
 class Game {
+  /**
+   * Create a new Game instance
+   *
+   * @param {string} id ID for game, defaults to new UUID
+   * @param {Player[]} players Array of Player instances
+   */
   constructor(id = uuid.v4(), players) {
     this.id = id;
     this.players = players;
