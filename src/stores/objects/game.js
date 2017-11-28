@@ -12,7 +12,6 @@ class Game {
     this.id = id || uuid.v4();
     this.players = players;
     this.winingScore = 11;
-    this.initialServer = players[0].id;
 
     extendObservable(this, {
       isActive: false,
