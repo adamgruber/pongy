@@ -1,9 +1,13 @@
-import { transaction } from 'mobx';
 import Game from '../../../stores/objects/game';
 import Player from '../../../stores/objects/player';
-
-const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-const nonWinningScore = () => randomInt(0, 9);
+import {
+  adScore,
+  deuceScore,
+  finalScore,
+  gameScore,
+  noScore,
+  setScore
+} from '../../../testUtils';
 
 describe('Game', () => {
   let subject;
@@ -49,10 +53,7 @@ describe('Game', () => {
 
     describe('scoreTotal', () => {
       beforeEach(() => {
-        transaction(() => {
-          pOne.score = 3;
-          pTwo.score = 4;
-        });
+        setScore(pOne, pTwo, 3, 4);
       });
 
       it('should return the sum of scores from all players', () => {
@@ -66,48 +67,48 @@ describe('Game', () => {
       });
 
       it('should return false when player scores are different', () => {
-        pOne.score = 1;
+        setScore(pOne, pTwo, 2, 5);
         expect(subject.isGameTied).toBe(false);
       });
     });
 
     describe('isDeuce', () => {
       [
-        { one: 10, two: 10, expected: true },
-        { one: 11, two: 11, expected: true },
-        { one: 13, two: 11, expected: false },
-        { one: 12, two: 11, expected: false },
-        { one: 12, two: 10, expected: false },
-        { one: 11, two: 10, expected: false },
-        { one: 10, two: nonWinningScore(), expected: false },
-        { one: nonWinningScore(), two: nonWinningScore(), expected: false }
+        { ...noScore(), expected: false },
+        { ...deuceScore(), expected: true },
+        { ...gameScore(1), expected: false },
+        { ...gameScore(2), expected: false },
+        { ...adScore(1), expected: false },
+        { ...adScore(2), expected: false },
+        { ...finalScore(1), expected: false },
+        { ...finalScore(2), expected: false }
       ].forEach(({one, two, expected }) => {
         it(`should return ${expected} when score is ${one}:${two}`, () => {
-          transaction(() => {
-            pOne.score = one;
-            pTwo.score = two;
-          });
+          setScore(pOne, pTwo, one, two);
           expect(subject.isDeuce).toBe(expected);
         });
       });
     });
 
     describe('server', () => {
+      const gameScoreOneEven = gameScore(1, { even: true });
+      const gameScoreOneOdd = gameScore(1, { odd: true });
+      const gameScoreTwoEven = gameScore(2, { even: true });
+      const gameScoreTwoOdd = gameScore(2, { odd: true });
+      const getExpected = (total) => Math.floor(total / 2) % 2 === 0 ? 0 : 1;
+
       [
-        { one: 12, two: 10, expected: 1 },
-        { one: 11, two: 11, expected: 0 },
-        { one: 10, two: 11, expected: 1 },
-        { one: 11, two: 10, expected: 1 },
-        { one: 10, two: 10, expected: 0 },
-        { one: 2, two: 0, expected: 1 },
-        { one: 1, two: 0, expected: 0 },
-        { one: 0, two: 0, expected: 0 }
+        { ...noScore(), expected: 0 },
+        { ...deuceScore(), expected: 0 },
+        {...gameScoreOneEven, expected: getExpected(gameScoreOneEven.total) },
+        {...gameScoreOneOdd, expected: getExpected(gameScoreOneOdd.total) },
+        {...gameScoreTwoEven, expected: getExpected(gameScoreTwoEven.total) },
+        {...gameScoreTwoOdd, expected: getExpected(gameScoreTwoOdd.total) },
+        { ...adScore(1), expected: 1 },
+        { ...adScore(2), expected: 1 }
       ].forEach(({one, two, expected }) => {
         it(`should return ${expected} when score is ${one}:${two}`, () => {
-          transaction(() => {
-            pOne.score = one;
-            pTwo.score = two;
-          });
+          setScore(pOne, pTwo, one, two);
           expect(subject.server).toBe(subject.players[expected].id);
         });
       });
@@ -115,19 +116,17 @@ describe('Game', () => {
 
     describe('isGameOver', () => {
       [
-        { one: 13, two: 11, expected: true },
-        { one: 12, two: 11, expected: false },
-        { one: 11, two: 11, expected: false },
-        { one: 12, two: 10, expected: true },
-        { one: 11, two: 10, expected: false },
-        { one: 10, two: 10, expected: false },
-        { one: nonWinningScore(), two: nonWinningScore(), expected: false },
+        { ...noScore(), expected: false },
+        { ...deuceScore(), expected: false },
+        { ...gameScore(1), expected: false },
+        { ...gameScore(2), expected: false },
+        { ...adScore(1), expected: false },
+        { ...adScore(2), expected: false },
+        { ...finalScore(1), expected: true },
+        { ...finalScore(2), expected: true }
       ].forEach(({one, two, expected }) => {
         it(`should return ${expected} when score is ${one}:${two}`, () => {
-          transaction(() => {
-            pOne.score = one;
-            pTwo.score = two;
-          });
+          setScore(pOne, pTwo, one, two);
           expect(subject.isGameOver).toBe(expected);
         });
       });
@@ -135,48 +134,43 @@ describe('Game', () => {
 
     describe('winner', () => {
       [
-        { one: 13, two: 11, expected: 0 },
-        { one: 12, two: 11, expected: undefined },
-        { one: 11, two: 12, expected: undefined },
-        { one: 11, two: 11, expected: undefined },
-        { one: 12, two: 10, expected: 0 },
-        { one: 10, two: 12, expected: 1 },
-        { one: 7, two: 11, expected: 1 },
-        { one: 2, two: 8, expected: undefined },
-        { one: nonWinningScore(), two: nonWinningScore(), expected: undefined },
+        { ...noScore(), expected: undefined },
+        { ...deuceScore(), expected: undefined },
+        { ...gameScore(1), expected: undefined },
+        { ...gameScore(2), expected: undefined },
+        { ...adScore(1), expected: undefined },
+        { ...adScore(2), expected: undefined },
+        { ...finalScore(1), expected: 0 },
+        { ...finalScore(2), expected: 1 }
       ].forEach(({one, two, winner, expected }) => {
         it(`should return ${expected} when score is ${one}:${two}`, () => {
-          transaction(() => {
-            pOne.score = one;
-            pTwo.score = two;
-          });
-          if (expected === undefined) {
-            expect(subject.winner).toBe(expected);
-          } else {
-            expect(subject.winner).toBe(subject.players[expected].id);
-          }
+          setScore(pOne, pTwo, one, two);
+          expect(subject.winner).toBe(
+            expected === undefined
+              ? expected
+              : subject.players[expected].id
+          );
         });
       });
     });
 
     describe('playerAdvantage', () => {
       [
-        { one: 10, two: 11, expected: 1 },
-        { one: 11, two: 10, expected: 0 },
-        { one: 10, two: 10, expected: undefined },
-        { one: 12, two: 10, expected: undefined },
-        { one: nonWinningScore(), two: nonWinningScore(), expected: undefined }
+        { ...deuceScore(), expected: undefined },
+        { ...gameScore(1), expected: undefined },
+        { ...gameScore(2), expected: undefined },
+        { ...adScore(1), expected: 0 },
+        { ...adScore(2), expected: 1 },
+        { ...finalScore(1), expected: undefined },
+        { ...finalScore(2), expected: undefined }
       ].forEach(({one, two, expected }) => {
         it(`should return ${expected} when score is ${one}:${two}`, () => {
-          transaction(() => {
-            pOne.score = one;
-            pTwo.score = two;
-          });
-          if (expected === undefined) {
-            expect(subject.playerAdvantage).toBe(expected);
-          } else {
-            expect(subject.playerAdvantage).toBe(subject.players[expected].id);
-          }
+          setScore(pOne, pTwo, one, two);
+          expect(subject.playerAdvantage).toBe(
+            expected === undefined
+              ? expected
+              : subject.players[expected].id
+          );
         });
       });
     });
@@ -191,8 +185,8 @@ describe('Game', () => {
 
       describe('when game is not over', () => {
         beforeEach(() => {
-          pOne.score = nonWinningScore();
-          pTwo.score = nonWinningScore();
+          const { one, two } = gameScore();
+          setScore(pOne, pTwo, one, two);
         });
 
         it('should call incrementScore for player 1', () => {
@@ -208,8 +202,8 @@ describe('Game', () => {
 
       describe('when game is over', () => {
         beforeEach(() => {
-          pOne.score = 11;
-          pTwo.score = nonWinningScore();
+          const { one, two } = finalScore();
+          setScore(pOne, pTwo, one, two);
         });
 
         it('should NOT call incrementScore for player 1', () => {
@@ -268,21 +262,17 @@ describe('Game', () => {
     });
 
     [
-      { one: 11, two: 11, expected: 'Deuce' },
-      { one: 10, two: 10, expected: 'Deuce' },
-      { one: 11, two: 10, expected: 'Advantage Player one' },
-      { one: 10, two: 11, expected: 'Advantage Player two' },
-      { one: 11, two: 7, expected: 'Player one wins.' },
-      { one: 7, two: 11, expected: 'Player two wins.' },
+      { ...deuceScore(), expected: 'Deuce' },
+      { ...adScore(1), expected: 'Advantage Player one' },
+      { ...adScore(2), expected: 'Advantage Player two' },
+      { ...finalScore(1), expected: 'Player one wins.' },
+      { ...finalScore(2), expected: 'Player two wins.' },
       { one: 0, two: 1, expected: '0, 1' },
       { one: 0, two: 2, expected: '2, 0' },
-      { one: 1, two: 2, expected: '2, 1' },
+      { one: 1, two: 2, expected: '2, 1' }
     ].forEach(({one, two, expected }) => {
       it(`should say "${expected}" when score is ${one}:${two}`, () => {
-        transaction(() => {
-          pOne.score = one;
-          pTwo.score = two;
-        });
+        setScore(pOne, pTwo, one, two);
         expect(window.speechSynthesis.speak)
           .toBeCalledWith({ sentence: expected });
       });
@@ -314,21 +304,17 @@ describe('Game', () => {
   });
 
   describe('getDisplayScoreForPlayer', () => {
-    const pOneScore = nonWinningScore();
+    const gameOne = gameScore(1);
+    const finalOne = finalScore(1);
     [
-      { one: 12, two: 10, expected: 12 },
-      { one: 11, two: 11, expected: 10 },
-      { one: 11, two: 10, expected: 10 },
-      { one: 10, two: 10, expected: 10 },
-      { one: pOneScore, two: 11, expected: pOneScore },
-      { one: pOneScore, two: 10, expected: pOneScore },
-      { one: pOneScore, two: nonWinningScore(), expected: pOneScore }
+      { ...noScore(), expected: 0 },
+      { ...deuceScore(), expected: 10 },
+      { ...gameOne, expected: gameOne.one },
+      { ...adScore(1), expected: 10 },
+      { ...finalOne, expected: finalOne.one },
     ].forEach(({one, two, expected }) => {
       it(`should return ${expected} for player 1 when score is ${one}:${two}`, () => {
-        transaction(() => {
-          pOne.score = one;
-          pTwo.score = two;
-        });
+        setScore(pOne, pTwo, one, two);
         expect(subject.getDisplayScoreForPlayer(pOne.id)).toBe(expected);
       });
     });
