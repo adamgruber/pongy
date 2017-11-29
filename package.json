@@ -38,9 +38,11 @@
     "watch:server": "NODE_ENV=development babel --watch ./server/src -d ./server/build",
     "build:server": "NODE_ENV=production babel ./server/src -d ./server/build",
     "test": "NODE_PATH=src react-scripts test --env=jsdom",
+    "lint": "node_modules/eslint/bin/eslint.js src",
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "babel-plugin-transform-object-rest-spread": "^6.26.0"
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "mock-socket": "^7.1.0"
   }
 }

@@ -2,11 +2,16 @@ import { extendObservable, action, autorun } from 'mobx';
 import uuid from 'uuid';
 
 class Game {
-  constructor(id = uuid.v4(), players) {
-    this.id = id;
+  /**
+   * Create a new Game instance
+   *
+   * @param {string} id ID for game, defaults to new UUID
+   * @param {Player[]} players Array of Player instances
+   */
+  constructor(id, players) {
+    this.id = id || uuid.v4();
     this.players = players;
     this.winingScore = 11;
-    this.initialServer = players[0].id;
 
     extendObservable(this, {
       isActive: false,
@@ -58,10 +63,12 @@ class Game {
           return undefined;
         }
 
+        /* istanbul ignore else */
         if (this._playerOneHasWon()) {
           return this.playerOne.id;
         }
 
+        /* istanbul ignore else */
         if (this._playerTwoHasWon()) {
           return this.playerTwo.id;
         }
@@ -82,17 +89,34 @@ class Game {
         return (pOneScore > pTwoScore) ? pOneId : pTwoId;
       },
 
+      /**
+       * Increment score of player at given index by 1.
+       * If game is over, score will not be incremented
+       *
+       * @param {number} playerIndex Index of player in players array
+       */
       incrementScore: action(playerIndex => {
-        // Disallow incrementing when a game is over
         if (!this.isGameOver) {
           this.players[playerIndex].incrementScore();
         }
       }),
 
+      /**
+       * Decrement score of player at given index by 1.
+       *
+       * @param {number} playerIndex Index of player in players array
+       */
       decrementScore: action(playerIndex => {
         this.players[playerIndex].decrementScore();
       }),
 
+      /**
+       * Toggles or sets the `isActive` property. If the "isActive"
+       * argument is supplied, it will set `isActive` to that value.
+       * Otherwise it toggles the current value.
+       *
+       * @param {boolean} [isActive] Value to set
+       */
       toggleIsActive: action((isActive) => {
         this.isActive = (isActive === undefined ? !this.isActive : isActive);
       }),
@@ -183,12 +207,17 @@ class Game {
     return this._getPlayerById(playerId).score;
   }
 
-  // Temp helper methods
+  // ---
+  // Helper methods useful for debugging
+  // ---
+
+  /* istanbul ignore next */
   setDeuce() {
     this.playerOne.score = 10;
     this.playerTwo.score = 10;
   }
 
+  /* istanbul ignore next */
   setAdvantage(player = 0) {
     const pOne = this.players[player];
     const pTwo = player === 0
@@ -199,6 +228,7 @@ class Game {
     pTwo.score = 10;
   }
 
+  /* istanbul ignore next */
   setWinner(player = 0) {
     const pOne = this.players[player];
     const pTwo = player === 0

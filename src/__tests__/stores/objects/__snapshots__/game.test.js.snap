@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Game computed properties score should return an object with player scores 1`] = `
+Object {
+  "playerOne": 0,
+  "playerTwo": 0,
+}
+`;
+
+exports[`Game constructor should create a Game instance with initial properties 1`] = `
+Game {
+  "decrementScore": [Function],
+  "id": "1234",
+  "incrementScore": [Function],
+  "isActive": false,
+  "players": Array [
+    Player {
+      "decrementScore": [Function],
+      "id": "1",
+      "incrementScore": [Function],
+      "score": 0,
+      "title": "PlayerOne",
+    },
+    Player {
+      "decrementScore": [Function],
+      "id": "2",
+      "incrementScore": [Function],
+      "score": 0,
+      "title": "PlayerTwo",
+    },
+  ],
+  "toggleIsActive": [Function],
+  "winingScore": 11,
+}
+`;

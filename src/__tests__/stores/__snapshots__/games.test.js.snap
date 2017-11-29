@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GameStore constructor initializes a new store with expected properties 1`] = `
+GameStore {
+  "decrementScore": [Function],
+  "games": Array [],
+  "incrementScore": [Function],
+  "newGame": [Function],
+}
+`;
