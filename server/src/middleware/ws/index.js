@@ -15,9 +15,9 @@ const WSMiddleware = (app, opts) => {
         return app;
     };
 
-    return (ctx, next) => {
+    return async (ctx, next) => {
         ctx.ws = app.ws;
-        next();
+        await next();
     };
 };
 
